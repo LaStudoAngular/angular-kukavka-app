@@ -1,20 +1,39 @@
 <form [formGroup]="employeeCreateForm" (ngSubmit)="onSubmit()">
   <!--  EMPLOYEE NAME-->
-  <div class="form-group">
+  <div
+    [ngClass]="{ 'text-danger': name.invalid && (name.dirty || name.touched) }"
+    class="form-group"
+  >
     <label class="text-capitalize text-label" for="name">employee name</label>
     <input
       formControlName="name"
+      [ngClass]="{ 'border-danger': name.invalid && (name.dirty || name.touched) }"
       type="text"
       class="form-control"
       id="name"
       placeholder="employee name"
     />
+    <small *ngIf="(name.dirty || name.touched) && name.errors?.required" class="text-danger"
+      >name is required</small
+    >
+    <small *ngIf="(name.dirty || name.touched) && name.errors?.minlength" class="text-danger"
+      >your name now is {{ name.errors?.minlength.actualLength }} and minimum length is
+      {{ name.errors?.minlength.requiredLength }} characters</small
+    >
+    <small *ngIf="(name.dirty || name.touched) && name.errors?.maxlength" class="text-danger"
+      >your name now is {{ name.errors?.maxlength.actualLength }} and maximum length is
+      {{ name.errors?.maxlength.requiredLength }} characters</small
+    >
   </div>
   <!--  EMPLOYEE EMAIL-->
-  <div class="form-group">
+  <div
+    [ngClass]="{ 'text-danger': email.invalid && (email.dirty || email.touched) }"
+    class="form-group"
+  >
     <label class="text-capitalize text-label" for="email">employee email</label>
     <input
       formControlName="email"
+      [ngClass]="{ 'border-danger': email.invalid && (email.dirty || email.touched) }"
       type="email"
       class="form-control"
       id="email"
@@ -48,7 +67,6 @@
             type="radio"
             id="beginner"
             value="beginner"
-            checked
           />
           <label class="form-check-label text-capitalize label-cursor" for="beginner"
             >beginner</label
@@ -82,18 +100,10 @@
     </div>
   </div>
   <!--  SUBMIT BUTTON-->
-  <div class="card">
-    <div class="card-body">
-      <button
-        [ngClass]="{ disabled: employeeCreateForm.invalid }"
-        type="submit"
-        class="btn btn-primary text-capitalize mr-2"
-      >
-        submit
-      </button>
-      <button (click)="loadData()" type="button" class="btn btn-primary text-capitalize">
-        load data
-      </button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary text-capitalize mr-2">
+    submit
+  </button>
+  <button (click)="loadData()" type="button" class="btn btn-primary text-capitalize">
+    load data
+  </button>
 </form>

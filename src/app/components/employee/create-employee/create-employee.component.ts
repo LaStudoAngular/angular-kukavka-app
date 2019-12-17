@@ -12,21 +12,18 @@ export class CreateEmployeeComponent implements OnInit {
 
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
-      name: [null, Validators.required],
-      email: [null, [Validators.required, Validators.email]],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
+      email: ['', [Validators.required, Validators.email]],
       skills: this.fb.group({
-        skillName: [null, Validators.required],
-        skillExperience: [null, Validators.required],
-        skillProficiency: [null, Validators.required],
+        skillName: ['', Validators.requiredTrue],
+        skillExperience: ['', Validators.requiredTrue],
+        skillProficiency: ['beginner', Validators.requiredTrue],
       }),
     });
   }
 
   onSubmit(): void {
-    if (this.employeeCreateForm.valid) {
-      const { name, email } = this.employeeCreateForm.value;
-      console.log(this.employeeCreateForm);
-    }
+    console.log(this.employeeCreateForm);
   }
 
   loadData(): void {
@@ -39,5 +36,13 @@ export class CreateEmployeeComponent implements OnInit {
         skillProficiency: 'beginner',
       },
     });
+  }
+
+  get name() {
+    return this.employeeCreateForm.get('name');
+  }
+
+  get email() {
+    return this.employeeCreateForm.get('email');
   }
 }
