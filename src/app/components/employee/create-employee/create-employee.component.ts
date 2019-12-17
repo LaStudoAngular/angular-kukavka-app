@@ -31,7 +31,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
-    this.employeeCreateForm.setValue({
+    this.employeeCreateForm.patchValue({
       name: 'Green Mouse',
       email: 'greem.mouse@gmail.com',
       skills: {
