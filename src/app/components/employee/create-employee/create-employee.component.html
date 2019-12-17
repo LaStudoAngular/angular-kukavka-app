@@ -4,7 +4,7 @@
     [ngClass]="{ 'text-danger': name.invalid && (name.dirty || name.touched) }"
     class="form-group"
   >
-    <label class="text-capitalize text-label" for="name">employee name</label>
+    <label class="text-capitalize text-label" for="name">employee name {{ count }}</label>
     <input
       formControlName="name"
       [ngClass]="{ 'border-danger': name.invalid && (name.dirty || name.touched) }"
@@ -39,6 +39,12 @@
       id="email"
       placeholder="employee email"
     />
+    <small *ngIf="(email.dirty || email.touched) && email.errors?.required" class="text-danger"
+      >email is required</small
+    >
+    <small *ngIf="(email.dirty || email.touched) && email.errors?.email" class="text-danger"
+      >your email must be correct</small
+    >
   </div>
   <!--  SKILLS GROUP-->
   <div class="form-group" formGroupName="skills">

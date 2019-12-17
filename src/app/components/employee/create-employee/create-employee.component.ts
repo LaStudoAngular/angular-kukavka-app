@@ -1,12 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'vk-create-employee',
   templateUrl: './create-employee.component.html',
   styleUrls: ['./create-employee.component.scss'],
 })
-export class CreateEmployeeComponent implements OnInit {
+export class CreateEmployeeComponent implements OnInit, OnDestroy {
+  count = 0;
+  destroy$ = new Subject();
   employeeCreateForm: FormGroup;
   constructor(private fb: FormBuilder) {}
 
@@ -20,6 +24,18 @@ export class CreateEmployeeComponent implements OnInit {
         skillProficiency: ['beginner', Validators.requiredTrue],
       }),
     });
+    this.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((name: string) => (this.count = name.length));
+    // ПОДПИСКА ИДЕТ НА ВСЕ КОНТРОЛЫ, КАКИЕ ЕСТЬ У ФОРМЫ
+    this.employeeCreateForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((v: any) => console.log(v));
+    // ПОДПИСКА ИДЕТ НА ВСЕХ КОНТРОЛЫ ПОДГРУППЫ ФОРМЫ
+    this.employeeCreateForm
+      .get('skills')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((v: any) => console.log(v));
   }
 
   onSubmit(): void {
@@ -44,5 +60,10 @@ export class CreateEmployeeComponent implements OnInit {
 
   get email() {
     return this.employeeCreateForm.get('email');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
