@@ -1,4 +1,5 @@
 <form [formGroup]="employeeCreateForm" (ngSubmit)="onSubmit()">
+  <!--  EMPLOYEE NAME-->
   <div class="form-group">
     <label class="text-capitalize text-label" for="name">employee name</label>
     <input
@@ -9,6 +10,7 @@
       placeholder="employee name"
     />
   </div>
+  <!--  EMPLOYEE EMAIL-->
   <div class="form-group">
     <label class="text-capitalize text-label" for="email">employee email</label>
     <input
@@ -19,56 +21,79 @@
       placeholder="employee email"
     />
   </div>
-  <div class="form-group">
-    <label class="text-capitalize text-label">employee skills</label>
-    <div class="form-row">
-      <div class="col"><input class="form-control" placeholder="skill name" /></div>
-      <div class="col"><input class="form-control" placeholder="skill in years" /></div>
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="text-capitalize text-label">employee proficiency</label>
-    <div class="form-row">
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="proficiency"
-          id="beginner"
-          value="beginner"
-          checked
-        />
-        <label class="form-check-label text-capitalize label-cursor" for="beginner">beginner</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="proficiency"
-          id="intermediate"
-          value="intermediate"
-        />
-        <label class="form-check-label text-capitalize label-cursor" for="intermediate"
-          >intermediate</label
-        >
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="proficiency"
-          id="advanced"
-          value="advanced"
-        />
-        <label class="form-check-label text-capitalize label-cursor" for="advanced">advanced</label>
+  <!--  SKILLS GROUP-->
+  <div class="form-group" formGroupName="skills">
+    <div class="form-group">
+      <label class="text-capitalize text-label">employee skills</label>
+      <div class="form-row">
+        <div class="col">
+          <input formControlName="skillName" class="form-control" placeholder="skill name" />
+        </div>
+        <div class="col">
+          <input
+            formControlName="skillExperience"
+            class="form-control"
+            placeholder="skill in years"
+          />
+        </div>
       </div>
     </div>
+    <div class="form-group">
+      <label class="text-capitalize text-label">employee proficiency</label>
+      <div class="form-row">
+        <div class="form-check form-check-inline">
+          <input
+            formControlName="skillProficiency"
+            class="form-check-input"
+            type="radio"
+            id="beginner"
+            value="beginner"
+            checked
+          />
+          <label class="form-check-label text-capitalize label-cursor" for="beginner"
+            >beginner</label
+          >
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            formControlName="skillProficiency"
+            class="form-check-input"
+            type="radio"
+            id="intermediate"
+            value="intermediate"
+          />
+          <label class="form-check-label text-capitalize label-cursor" for="intermediate"
+            >intermediate</label
+          >
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            formControlName="skillProficiency"
+            class="form-check-input"
+            type="radio"
+            id="advanced"
+            value="advanced"
+          />
+          <label class="form-check-label text-capitalize label-cursor" for="advanced"
+            >advanced</label
+          >
+        </div>
+      </div>
+    </div>
   </div>
-  <button
-    [ngClass]="{ disabled: employeeCreateForm.invalid }"
-    type="submit"
-    class="btn btn-primary"
-  >
-    Submit
-  </button>
+  <!--  SUBMIT BUTTON-->
+  <div class="card">
+    <div class="card-body">
+      <button
+        [ngClass]="{ disabled: employeeCreateForm.invalid }"
+        type="submit"
+        class="btn btn-primary text-capitalize mr-2"
+      >
+        submit
+      </button>
+      <button (click)="loadData()" type="button" class="btn btn-primary text-capitalize">
+        load data
+      </button>
+    </div>
+  </div>
 </form>

@@ -14,14 +14,10 @@ export class CreateEmployeeComponent implements OnInit {
     this.employeeCreateForm = this.fb.group({
       name: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
-      skill: this.fb.group({
-        name: [null, Validators.required],
-        experience: [null, Validators.required],
-      }),
-      proficiency: this.fb.group({
-        beginner: [null, Validators.required],
-        intermediate: [null, Validators.required],
-        advanced: [null, Validators.required],
+      skills: this.fb.group({
+        skillName: [null, Validators.required],
+        skillExperience: [null, Validators.required],
+        skillProficiency: [null, Validators.required],
       }),
     });
   }
@@ -31,5 +27,17 @@ export class CreateEmployeeComponent implements OnInit {
       const { name, email } = this.employeeCreateForm.value;
       console.log(this.employeeCreateForm);
     }
+  }
+
+  loadData(): void {
+    this.employeeCreateForm.setValue({
+      name: 'Green Mouse',
+      email: 'greem.mouse@gmail.com',
+      skills: {
+        skillName: 'HTML',
+        skillExperience: '2',
+        skillProficiency: 'beginner',
+      },
+    });
   }
 }
