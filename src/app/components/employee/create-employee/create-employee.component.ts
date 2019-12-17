@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'vk-create-employee',
@@ -10,32 +9,21 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class CreateEmployeeComponent implements OnInit, OnDestroy {
   count = 0;
-  destroy$ = new Subject();
   employeeCreateForm: FormGroup;
+  users: FormArray;
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
       email: ['', [Validators.required, Validators.email]],
+      users: this.fb.array([this.createNewFormSection()]),
       skills: this.fb.group({
         skillName: ['', Validators.requiredTrue],
         skillExperience: ['', Validators.requiredTrue],
         skillProficiency: ['beginner', Validators.requiredTrue],
       }),
     });
-    this.name.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((name: string) => (this.count = name.length));
-    // ПОДПИСКА ИДЕТ НА ВСЕ КОНТРОЛЫ, КАКИЕ ЕСТЬ У ФОРМЫ
-    this.employeeCreateForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((v: any) => console.log(v));
-    // ПОДПИСКА ИДЕТ НА ВСЕХ КОНТРОЛЫ ПОДГРУППЫ ФОРМЫ
-    this.employeeCreateForm
-      .get('skills')
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((v: any) => console.log(v));
   }
 
   onSubmit(): void {
@@ -54,16 +42,25 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     });
   }
 
-  get name() {
-    return this.employeeCreateForm.get('name');
+  createNewFormSection(): FormGroup {
+    return this.fb.group({
+      firstName: [''],
+      lastName: [''],
+    });
   }
 
-  get email() {
-    return this.employeeCreateForm.get('email');
+  onAddNewUser(): void {
+    const users = this.employeeCreateForm.get('users') as FormArray;
+    users.push(this.createNewFormSection());
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  get name(): FormControl {
+    return this.employeeCreateForm.get('name') as FormControl;
   }
+
+  get email(): FormControl {
+    return this.employeeCreateForm.get('email') as FormControl;
+  }
+
+  ngOnDestroy(): void {}
 }

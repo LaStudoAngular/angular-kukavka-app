@@ -105,6 +105,19 @@
       </div>
     </div>
   </div>
+  <!--  PHONES-->
+  <div formArrayName="users">
+    <h3>users list</h3>
+    <button (click)="onAddNewUser()" type="button" class="btn btn-secondary">
+      add new user
+    </button>
+    <div *ngFor="let user of employeeCreateForm.get('users').controls; let idx = index">
+      <div class="form-group" [formGroupName]="idx.toString()">
+        <input type="text" formControlName="firstName" />
+        <input type="text" formControlName="lastName" />
+      </div>
+    </div>
+  </div>
   <!--  SUBMIT BUTTON-->
   <button type="submit" class="btn btn-primary text-capitalize mr-2">
     submit
