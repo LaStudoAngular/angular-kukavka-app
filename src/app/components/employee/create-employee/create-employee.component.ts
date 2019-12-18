@@ -15,7 +15,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(10)]],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email]],
       users: this.fb.array([this.createNewFormSection()]),
       skills: this.fb.group({
@@ -26,20 +26,27 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     console.log(this.employeeCreateForm);
   }
 
-  loadData(): void {
-    this.employeeCreateForm.patchValue({
-      name: 'Green Mouse',
-      email: 'greem.mouse@gmail.com',
-      skills: {
-        skillName: 'HTML',
-        skillExperience: '2',
-        skillProficiency: 'beginner',
-      },
+  private logPairs(group: FormGroup): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      // проверяем, является ли abstractControl простым input или группой inputs
+      if (abstractControl instanceof FormGroup) {
+        this.logPairs(abstractControl);
+        // abstractControl.disable() - деактивирует все input данной группы
+      } else {
+        // abstractControl.disable() - деактивирует выбранный input
+        // abstractControl.markAsDirty() - программно обозначает input как dirty - в поле вводились данные
+        console.log(`Key :: ${key} Value :: ${abstractControl.value}`);
+      }
     });
+  }
+
+  public loadData(): void {
+    this.logPairs(this.employeeCreateForm);
   }
 
   createNewFormSection(): FormGroup {
@@ -54,11 +61,11 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     users.push(this.createNewFormSection());
   }
 
-  get name(): FormControl {
+  public get name(): FormControl {
     return this.employeeCreateForm.get('name') as FormControl;
   }
 
-  get email(): FormControl {
+  public get email(): FormControl {
     return this.employeeCreateForm.get('email') as FormControl;
   }
 
