@@ -22,6 +22,9 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       required: 'Email is required',
       email: 'Input must be valid email',
     },
+    phone: {
+      required: 'Phone is required',
+    },
     skillName: {
       required: 'Name is required',
     },
@@ -35,6 +38,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   public formErrors = {
     name: '',
     email: '',
+    phone: '',
     skillName: '',
     skillExperience: '',
     skillProficiency: '',
@@ -46,22 +50,42 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email]],
+      contactPreference: ['email'],
+      phone: [''],
       skills: this.fb.group({
         skillName: ['', Validators.required],
         skillExperience: ['', Validators.required],
         skillProficiency: ['', Validators.required],
       }),
     });
+
+    this.employeeCreateForm
+      .get('contactPreference')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((response: string) => {
+        this.contactPreferenceHandler(response);
+      });
+
     this.employeeCreateForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((response: any) => {
         this.logValidationErrors(this.employeeCreateForm);
-        // console.log(this.formErrors);
       });
   }
 
   public onSubmit(): void {
     console.log(this.employeeCreateForm);
+  }
+
+  private contactPreferenceHandler(value: string): void {
+    const phoneControl: FormControl = this.employeeCreateForm.get('phone') as FormControl;
+    if (phoneControl && value === 'phone') {
+      phoneControl.setValidators(Validators.required);
+    } else {
+      phoneControl.clearValidators();
+    }
+    // обновляем view чтобы валидаторы применились в модели формы
+    phoneControl.updateValueAndValidity();
   }
 
   public logValidationErrors(group: FormGroup = this.employeeCreateForm): void {
