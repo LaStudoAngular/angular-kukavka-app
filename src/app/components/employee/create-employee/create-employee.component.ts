@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'vk-create-employee',
@@ -7,9 +9,10 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
   styleUrls: ['./create-employee.component.scss'],
 })
 export class CreateEmployeeComponent implements OnInit, OnDestroy {
-  employeeCreateForm: FormGroup;
-  users: FormArray;
-  messagesVocabulary = {
+  public employeeCreateForm: FormGroup;
+  // users: FormArray;
+  private destroy$ = new Subject();
+  private messagesVocabulary = {
     name: {
       required: 'Name is required',
       minlength: 'Name must be greater than 2 characters',
@@ -29,7 +32,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       required: 'Proficiency is required',
     },
   };
-  formErrors = {
+  public formErrors = {
     name: '',
     email: '',
     skillName: '',
@@ -43,20 +46,25 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email]],
-      // users: this.fb.array([this.createNewFormSection()]),
       skills: this.fb.group({
         skillName: ['', Validators.required],
         skillExperience: ['', Validators.required],
         skillProficiency: ['', Validators.required],
       }),
     });
+    this.employeeCreateForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response: any) => {
+        this.logValidationErrors(this.employeeCreateForm);
+        // console.log(this.formErrors);
+      });
   }
 
   public onSubmit(): void {
     console.log(this.employeeCreateForm);
   }
 
-  private logValidationErrors(group: FormGroup): void {
+  public logValidationErrors(group: FormGroup = this.employeeCreateForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       // проверяем, является ли abstractControl простым input или группой inputs
@@ -64,7 +72,11 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
         this.logValidationErrors(abstractControl);
       } else {
         this.formErrors[key] = '';
-        if (abstractControl && abstractControl.invalid) {
+        if (
+          abstractControl &&
+          abstractControl.invalid &&
+          (abstractControl.dirty || abstractControl.touched)
+        ) {
           const messages = this.messagesVocabulary[key];
           // abstractControl.errors - перебираем все существующие на данный момент ошибки валидации в контроле
           for (const errorKey in abstractControl.errors) {
@@ -78,8 +90,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   }
 
   public loadData(): void {
-    this.logValidationErrors(this.employeeCreateForm);
-    console.log(this.formErrors);
+    // this.logValidationErrors(this.employeeCreateForm);
   }
 
   createNewFormSection(): FormGroup {
@@ -102,5 +113,8 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     return this.employeeCreateForm.get('email') as FormControl;
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,69 +1,70 @@
 <form [formGroup]="employeeCreateForm" (ngSubmit)="onSubmit()">
   <!--  EMPLOYEE NAME-->
-  <div
-    [ngClass]="{ 'text-danger': name.invalid && (name.dirty || name.touched) }"
-    class="form-group"
-  >
+  <div [ngClass]="{ 'text-danger': formErrors.name }" class="form-group">
     <label class="text-capitalize text-label" for="name">employee name</label>
     <input
       formControlName="name"
-      [ngClass]="{ 'border-danger': name.invalid && (name.dirty || name.touched) }"
+      [ngClass]="{ 'border-danger': formErrors.name }"
+      (blur)="logValidationErrors()"
       type="text"
       class="form-control"
       id="name"
       placeholder="employee name"
     />
-    <small *ngIf="(name.dirty || name.touched) && name.errors?.required" class="text-danger"
-      >name is required</small
-    >
-    <small *ngIf="(name.dirty || name.touched) && name.errors?.minlength" class="text-danger"
-      >your name now is {{ name.errors?.minlength.actualLength }} and minimum length is
-      {{ name.errors?.minlength.requiredLength }} characters</small
-    >
-    <small *ngIf="(name.dirty || name.touched) && name.errors?.maxlength" class="text-danger"
-      >your name now is {{ name.errors?.maxlength.actualLength }} and maximum length is
-      {{ name.errors?.maxlength.requiredLength }} characters</small
-    >
+    <div class="controlErrors" *ngIf="formErrors.name">
+      <small>{{ formErrors.name }}</small>
+    </div>
   </div>
+
   <!--  EMPLOYEE EMAIL-->
-  <div
-    [ngClass]="{ 'text-danger': email.invalid && (email.dirty || email.touched) }"
-    class="form-group"
-  >
+  <div [ngClass]="{ 'text-danger': formErrors.email }" class="form-group">
     <label class="text-capitalize text-label" for="email">employee email</label>
     <input
       formControlName="email"
-      [ngClass]="{ 'border-danger': email.invalid && (email.dirty || email.touched) }"
+      [ngClass]="{ 'border-danger': formErrors.email }"
+      (blur)="logValidationErrors()"
       type="email"
       class="form-control"
       id="email"
       placeholder="employee email"
     />
-    <small *ngIf="(email.dirty || email.touched) && email.errors?.required" class="text-danger"
-      >email is required</small
-    >
-    <small *ngIf="(email.dirty || email.touched) && email.errors?.email" class="text-danger"
-      >your email must be correct</small
-    >
+    <div class="controlErrors" *ngIf="formErrors.email">
+      <small>{{ formErrors.email }}</small>
+    </div>
   </div>
+
   <!--  SKILLS GROUP-->
   <div class="form-group" formGroupName="skills">
     <div class="form-group">
       <label class="text-capitalize text-label">employee skills</label>
       <div class="form-row">
-        <div class="col">
-          <input formControlName="skillName" class="form-control" placeholder="skill name" />
+        <div class="col" [ngClass]="{ 'text-danger': formErrors.skillName }">
+          <input
+            formControlName="skillName"
+            [ngClass]="{ 'border-danger': formErrors.skillName }"
+            class="form-control"
+            (blur)="logValidationErrors()"
+            placeholder="skill name"
+          />
+          <div class="controlErrors" *ngIf="formErrors.skillName">
+            <small>{{ formErrors.skillName }}</small>
+          </div>
         </div>
-        <div class="col">
+        <div class="col" [ngClass]="{ 'text-danger': formErrors.skillExperience }">
           <input
             formControlName="skillExperience"
+            [ngClass]="{ 'border-danger': formErrors.skillExperience }"
             class="form-control"
+            (blur)="logValidationErrors()"
             placeholder="skill in years"
           />
+          <div class="controlErrors" *ngIf="formErrors.skillExperience">
+            <small>{{ formErrors.skillExperience }}</small>
+          </div>
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" [ngClass]="{ 'text-danger': formErrors.skillProficiency }">
       <label class="text-capitalize text-label">employee proficiency</label>
       <div class="form-row">
         <div class="form-check form-check-inline">
@@ -71,6 +72,7 @@
             formControlName="skillProficiency"
             class="form-check-input"
             type="radio"
+            (blur)="logValidationErrors()"
             id="beginner"
             value="beginner"
           />
@@ -83,6 +85,7 @@
             formControlName="skillProficiency"
             class="form-check-input"
             type="radio"
+            (blur)="logValidationErrors()"
             id="intermediate"
             value="intermediate"
           />
@@ -95,6 +98,7 @@
             formControlName="skillProficiency"
             class="form-check-input"
             type="radio"
+            (blur)="logValidationErrors()"
             id="advanced"
             value="advanced"
           />
@@ -102,6 +106,9 @@
             >advanced</label
           >
         </div>
+      </div>
+      <div class="controlErrors" *ngIf="formErrors.skillProficiency">
+        <small>{{ formErrors.skillProficiency }}</small>
       </div>
     </div>
   </div>
