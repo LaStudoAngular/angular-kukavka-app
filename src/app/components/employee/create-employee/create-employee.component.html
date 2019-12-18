@@ -4,7 +4,7 @@
     [ngClass]="{ 'text-danger': name.invalid && (name.dirty || name.touched) }"
     class="form-group"
   >
-    <label class="text-capitalize text-label" for="name">employee name {{ count }}</label>
+    <label class="text-capitalize text-label" for="name">employee name</label>
     <input
       formControlName="name"
       [ngClass]="{ 'border-danger': name.invalid && (name.dirty || name.touched) }"
@@ -102,19 +102,6 @@
             >advanced</label
           >
         </div>
-      </div>
-    </div>
-  </div>
-  <!--  PHONES-->
-  <div formArrayName="users">
-    <h3>users list</h3>
-    <button (click)="onAddNewUser()" type="button" class="btn btn-secondary">
-      add new user
-    </button>
-    <div *ngFor="let user of employeeCreateForm.get('users').controls; let idx = index">
-      <div class="form-group" [formGroupName]="idx.toString()">
-        <input type="text" formControlName="firstName" />
-        <input type="text" formControlName="lastName" />
       </div>
     </div>
   </div>

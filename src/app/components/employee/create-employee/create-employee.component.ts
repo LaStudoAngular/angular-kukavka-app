@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { untilDestroyed } from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'vk-create-employee',
@@ -8,20 +7,47 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
   styleUrls: ['./create-employee.component.scss'],
 })
 export class CreateEmployeeComponent implements OnInit, OnDestroy {
-  count = 0;
   employeeCreateForm: FormGroup;
   users: FormArray;
+  messagesVocabulary = {
+    name: {
+      required: 'Name is required',
+      minlength: 'Name must be greater than 2 characters',
+      maxlength: 'Name must be less than 20 characters',
+    },
+    email: {
+      required: 'Email is required',
+      email: 'Input must be valid email',
+    },
+    skillName: {
+      required: 'Name is required',
+    },
+    skillExperience: {
+      required: 'Experience is required',
+    },
+    skillProficiency: {
+      required: 'Proficiency is required',
+    },
+  };
+  formErrors = {
+    name: '',
+    email: '',
+    skillName: '',
+    skillExperience: '',
+    skillProficiency: '',
+  };
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email]],
-      users: this.fb.array([this.createNewFormSection()]),
+      // users: this.fb.array([this.createNewFormSection()]),
       skills: this.fb.group({
-        skillName: ['', Validators.requiredTrue],
-        skillExperience: ['', Validators.requiredTrue],
-        skillProficiency: ['beginner', Validators.requiredTrue],
+        skillName: ['', Validators.required],
+        skillExperience: ['', Validators.required],
+        skillProficiency: ['', Validators.required],
       }),
     });
   }
@@ -30,23 +56,30 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     console.log(this.employeeCreateForm);
   }
 
-  private logPairs(group: FormGroup): void {
+  private logValidationErrors(group: FormGroup): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       // проверяем, является ли abstractControl простым input или группой inputs
       if (abstractControl instanceof FormGroup) {
-        this.logPairs(abstractControl);
-        // abstractControl.disable() - деактивирует все input данной группы
+        this.logValidationErrors(abstractControl);
       } else {
-        // abstractControl.disable() - деактивирует выбранный input
-        // abstractControl.markAsDirty() - программно обозначает input как dirty - в поле вводились данные
-        console.log(`Key :: ${key} Value :: ${abstractControl.value}`);
+        this.formErrors[key] = '';
+        if (abstractControl && abstractControl.invalid) {
+          const messages = this.messagesVocabulary[key];
+          // abstractControl.errors - перебираем все существующие на данный момент ошибки валидации в контроле
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              this.formErrors[key] += messages[errorKey] + ' ';
+            }
+          }
+        }
       }
     });
   }
 
   public loadData(): void {
-    this.logPairs(this.employeeCreateForm);
+    this.logValidationErrors(this.employeeCreateForm);
+    console.log(this.formErrors);
   }
 
   createNewFormSection(): FormGroup {
