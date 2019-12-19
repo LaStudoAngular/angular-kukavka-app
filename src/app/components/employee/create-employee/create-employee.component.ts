@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import emailDomain from '../../../shared/validators/email-validator';
+import CustomValidators from '../../../shared/validators/custom.validators';
 
 @Component({
   selector: 'vk-create-employee',
@@ -49,7 +49,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
-      email: ['', [Validators.required, emailDomain('gmail.com')]],
+      email: ['', [Validators.required, CustomValidators.emailDomain('gmail.com')]],
       contactPreference: ['email'],
       phone: [''],
       skills: this.fb.group({
