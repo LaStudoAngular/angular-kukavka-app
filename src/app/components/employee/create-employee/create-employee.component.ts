@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { emailDomain } from '../../../shared/validators/email-validator';
 
 @Component({
   selector: 'vk-create-employee',
@@ -10,7 +11,6 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class CreateEmployeeComponent implements OnInit, OnDestroy {
   public employeeCreateForm: FormGroup;
-  // users: FormArray;
   private destroy$ = new Subject();
   private messagesVocabulary = {
     name: {
@@ -20,7 +20,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     },
     email: {
       required: 'Email is required',
-      email: 'Input must be valid email',
+      emailDomainError: 'Email must be gmail.ru at the end',
     },
     phone: {
       required: 'Phone is required',
@@ -49,7 +49,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, emailDomain]],
       contactPreference: ['email'],
       phone: [''],
       skills: this.fb.group({
@@ -104,7 +104,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
           const messages = this.messagesVocabulary[key];
           // abstractControl.errors - перебираем все существующие на данный момент ошибки валидации в контроле
           for (const errorKey in abstractControl.errors) {
-            if (errorKey) {
+            if (abstractControl.errors.hasOwnProperty(errorKey)) {
               this.formErrors[key] += messages[errorKey] + ' ';
             }
           }
