@@ -6,11 +6,9 @@ export default class CustomValidators {
       const email: string = control.value;
       const domain: string = email.slice(email.lastIndexOf('@') + 1).toLowerCase();
 
-      if (email === '' || domain === domainName.toLowerCase()) {
-        return null;
-      } else {
-        return { emailDomainError: true };
-      }
+      return email === '' || domain === domainName.toLowerCase()
+        ? null
+        : { emailDomainError: true };
     };
   }
 }

@@ -47,20 +47,43 @@
     </div>
   </div>
 
-  <!--  EMPLOYEE EMAIL-->
-  <div [ngClass]="{ 'text-danger': formErrors.email }" class="form-group">
-    <label class="text-capitalize text-label" for="email">employee email</label>
-    <input
-      formControlName="email"
-      [ngClass]="{ 'border-danger': formErrors.email }"
-      (blur)="logValidationErrors()"
-      type="email"
-      class="form-control"
-      id="email"
-      placeholder="employee email"
-    />
-    <div class="controlErrors" *ngIf="formErrors.email">
-      <small>{{ formErrors.email }}</small>
+  <!--  EMAIL GROUP-->
+  <div formGroupName="emailGroup">
+    <!--  EMPLOYEE EMAIL-->
+    <div [ngClass]="{ 'text-danger': formErrors.email }" class="form-group">
+      <label class="text-capitalize text-label" for="email">employee email</label>
+      <input
+        formControlName="email"
+        [ngClass]="{ 'border-danger': formErrors.email }"
+        (blur)="logValidationErrors()"
+        type="email"
+        class="form-control"
+        id="email"
+        placeholder="employee email"
+      />
+      <div class="controlErrors" *ngIf="formErrors.email">
+        <small>{{ formErrors.email }}</small>
+      </div>
+    </div>
+
+    <!--  EMPLOYEE CONFIRM EMAIL-->
+    <div [ngClass]="{ 'text-danger': formErrors.confirmEmail }" class="form-group">
+      <label class="text-capitalize text-label" for="confirmEmail">employee confirm email</label>
+      <input
+        formControlName="confirmEmail"
+        [ngClass]="{ 'border-danger': formErrors.confirmEmail }"
+        (blur)="logValidationErrors()"
+        type="email"
+        class="form-control"
+        id="confirmEmail"
+        placeholder="employee confirm email"
+      />
+      <div class="controlErrors" *ngIf="formErrors.confirmEmail">
+        <small>{{ formErrors.confirmEmail }}</small>
+      </div>
+      <div class="controlErrors" *ngIf="formErrors.emailGroup">
+        <small>{{ formErrors.emailGroup }}</small>
+      </div>
     </div>
   </div>
 

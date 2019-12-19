@@ -1,5 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import CustomValidators from '../../../shared/validators/custom.validators';
@@ -22,6 +29,12 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       required: 'Email is required',
       emailDomainError: 'Email must be gmail.com at the end',
     },
+    confirmEmail: {
+      required: 'Confirm email is required',
+    },
+    emailGroup: {
+      matchEmailError: 'Email and Confirm Email fields do not match',
+    },
     phone: {
       required: 'Phone is required',
     },
@@ -38,6 +51,8 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   public formErrors = {
     name: '',
     email: '',
+    confirmEmail: '',
+    emailGroup: '',
     phone: '',
     skillName: '',
     skillExperience: '',
@@ -49,7 +64,13 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
-      email: ['', [Validators.required, CustomValidators.emailDomain('gmail.com')]],
+      emailGroup: this.fb.group(
+        {
+          email: ['', [Validators.required, CustomValidators.emailDomain('gmail.com')]],
+          confirmEmail: ['', [Validators.required]],
+        },
+        { validator: matchEmail }
+      ),
       contactPreference: ['email'],
       phone: [''],
       skills: this.fb.group({
@@ -66,11 +87,9 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
         this.contactPreferenceHandler(response);
       });
 
-    this.employeeCreateForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((response: any) => {
-        this.logValidationErrors(this.employeeCreateForm);
-      });
+    this.employeeCreateForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.logValidationErrors(this.employeeCreateForm);
+    });
   }
 
   public onSubmit(): void {
@@ -114,7 +133,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   }
 
   public loadData(): void {
-    // this.logValidationErrors(this.employeeCreateForm);
+    //
   }
 
   createNewFormSection(): FormGroup {
@@ -140,5 +159,16 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+}
+
+function matchEmail(group: AbstractControl): { [key: string]: any } | null {
+  const emailControl = group.get('email');
+  const confirmEmailControl = group.get('confirmEmail');
+
+  if (emailControl.value === confirmEmailControl.value) {
+    return null;
+  } else {
+    return { matchEmailError: true };
   }
 }
