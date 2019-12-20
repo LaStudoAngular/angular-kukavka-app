@@ -73,11 +73,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       ),
       contactPreference: ['email'],
       phone: [''],
-      skills: this.fb.group({
-        skillName: ['', Validators.required],
-        skillExperience: ['', Validators.required],
-        skillProficiency: ['', Validators.required],
-      }),
+      skills: this.fb.array([this.addSkillFormGroup()]),
     });
 
     this.employeeCreateForm
@@ -131,8 +127,38 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     });
   }
 
+  public addSkillFormGroup(): FormGroup {
+    return this.fb.group({
+      skillName: ['', Validators.required],
+      skillExperience: ['', Validators.required],
+      skillProficiency: ['', Validators.required],
+    });
+  }
+
   public loadData(): void {
-    //
+    /*
+    const formArray = this.fb.array([
+      this.fb.control('Mark', Validators.required),
+      this.fb.group({
+        country: ['Austria', Validators.required],
+      }),
+      this.fb.array([]),
+    ]);
+    formArray.push(this.fb.control('Greenberg', Validators.required));
+    console.log(formArray.at(0).value + ' ' + formArray.at(formArray.length - 1).value);
+
+    for (const control of formArray.controls) {
+      if (control instanceof FormControl) {
+        console.log(`form control`);
+      }
+      if (control instanceof FormGroup) {
+        console.log(`form group`);
+      }
+      if (control instanceof FormArray) {
+        console.log(`form array`);
+      }
+    }
+    */
   }
 
   createNewFormSection(): FormGroup {
