@@ -110,24 +110,23 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   public logValidationErrors(group: FormGroup = this.employeeCreateForm): void {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
-      // проверяем, является ли abstractControl простым input или группой inputs
-      if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);
-      } else {
-        this.formErrors[key] = '';
-        if (
-          abstractControl &&
-          abstractControl.invalid &&
-          (abstractControl.dirty || abstractControl.touched)
-        ) {
-          const messages = this.messagesVocabulary[key];
-          // abstractControl.errors - перебираем все существующие на данный момент ошибки валидации в контроле
-          for (const errorKey in abstractControl.errors) {
-            if (abstractControl.errors.hasOwnProperty(errorKey)) {
-              this.formErrors[key] += messages[errorKey] + ' ';
-            }
+
+      this.formErrors[key] = '';
+      if (
+        abstractControl &&
+        abstractControl.invalid &&
+        (abstractControl.dirty || abstractControl.touched)
+      ) {
+        const messages = this.messagesVocabulary[key];
+        for (const errorKey in abstractControl.errors) {
+          if (abstractControl.errors.hasOwnProperty(errorKey)) {
+            this.formErrors[key] += messages[errorKey] + ' ';
           }
         }
+      }
+
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
       }
     });
   }
@@ -163,10 +162,13 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
 }
 
 function matchEmail(group: AbstractControl): { [key: string]: any } | null {
-  const emailControl = group.get('email');
-  const confirmEmailControl = group.get('confirmEmail');
+  const emailControl: FormControl = group.get('email') as FormControl;
+  const confirmEmailControl: FormControl = group.get('confirmEmail') as FormControl;
 
-  if (emailControl.value === confirmEmailControl.value) {
+  if (
+    emailControl.value.toLowerCase() === confirmEmailControl.value.toLowerCase() ||
+    confirmEmailControl.pristine
+  ) {
     return null;
   } else {
     return { matchEmailError: true };
