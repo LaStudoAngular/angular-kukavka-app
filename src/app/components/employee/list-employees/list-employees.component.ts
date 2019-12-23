@@ -1,12 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EmployeeService } from '../../../shared/services/employee.service';
+import { IEmployee } from '../../../shared/interfaces/IEmployee';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'vk-list-employees',
   templateUrl: './list-employees.component.html',
   styleUrls: ['./list-employees.component.scss'],
 })
-export class ListEmployeesComponent implements OnInit {
-  constructor() {}
+export class ListEmployeesComponent implements OnInit, OnDestroy {
+  constructor(private employeeService: EmployeeService) {}
+  public employees: IEmployee[] = [];
+  private destroy$ = new Subject();
 
-  ngOnInit() {}
+  editEmployee(index: number): void {
+    this.employeeService
+      .getEmployee(index)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((employee: IEmployee) => console.log(employee));
+  }
+
+  ngOnInit(): void {
+    this.employeeService
+      .getEmployees()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (employees: IEmployee[]) => (this.employees = employees),
+        error => console.log(error)
+      );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }
