@@ -109,13 +109,19 @@
   <!--  SKILLS GROUP-->
   <div class="d-flex flex-column ">
     <label class="text-capitalize text-label">employee skills</label>
-    <button type="button" (click)="addNewSkillGroup()" class="btn btn-primary text-capitalize">
+    <button
+      type="button"
+      (click)="addNewSkillGroup()"
+      class="btn btn-primary text-capitalize"
+      [disabled]="employeeCreateForm.get('skills').invalid"
+    >
       add new skill
     </button>
     <div
       formArrayName="skills"
       *ngFor="let skill of employeeCreateForm.get('skills').controls; let idx = index"
     >
+      <hr class="hr-divider" *ngIf="idx > 0" />
       <div class="form-group mt-4 border border-info rounded p-4" [formGroupName]="idx.toString()">
         <div class="form-group">
           <div class="form-row mt-2">
