@@ -38,26 +38,8 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     phone: {
       required: 'Phone is required',
     },
-    skillName: {
-      required: 'Name is required',
-    },
-    skillExperience: {
-      required: 'Experience is required',
-    },
-    skillProficiency: {
-      required: 'Proficiency is required',
-    },
   };
-  public formErrors = {
-    name: '',
-    email: '',
-    confirmEmail: '',
-    emailGroup: '',
-    phone: '',
-    skillName: '',
-    skillExperience: '',
-    skillProficiency: '',
-  };
+  public formErrors = {};
 
   constructor(private fb: FormBuilder) {}
 
@@ -137,13 +119,13 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
         this.logValidationErrors(abstractControl);
       }
 
-      if (abstractControl instanceof FormArray) {
-        for (const control of abstractControl.controls) {
-          if (control instanceof FormGroup) {
-            this.logValidationErrors(control);
-          }
-        }
-      }
+      // if (abstractControl instanceof FormArray) {
+      //   for (const control of abstractControl.controls) {
+      //     if (control instanceof FormGroup) {
+      //       this.logValidationErrors(control);
+      //     }
+      //   }
+      // }
     });
   }
 
