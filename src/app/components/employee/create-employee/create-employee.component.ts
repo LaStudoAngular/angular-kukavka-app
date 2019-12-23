@@ -10,6 +10,9 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import CustomValidators from '../../../shared/validators/custom.validators';
+import { ActivatedRoute, Params } from '@angular/router';
+import { EmployeeService } from '../../../shared/services/employee.service';
+import { IEmployee } from '../../../shared/interfaces/IEmployee';
 
 @Component({
   selector: 'vk-create-employee',
@@ -41,9 +44,19 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
   };
   public formErrors = {};
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private employeeService: EmployeeService
+  ) {}
 
   ngOnInit() {
+    this.route.params.subscribe((params: Params) => {
+      this.employeeService.getEmployee(params.id).subscribe((employee: IEmployee) => {
+        this.employeeCreateForm.setValue(employee);
+      });
+    });
+
     this.employeeCreateForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       emailGroup: this.fb.group(

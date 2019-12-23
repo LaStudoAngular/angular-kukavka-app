@@ -2,7 +2,7 @@
   "employees": [
     {
       "id": 1,
-      "fullName": "Mark",
+      "name": "Mark",
       "contactPreference": "email",
       "email": "mark@email.com",
       "phone": "5641238971",
@@ -21,7 +21,7 @@
     },
     {
       "id": 2,
-      "fullName": "John",
+      "name": "John",
       "contactPreference": "phone",
       "email": "john@email.com",
       "phone": "3242138971",

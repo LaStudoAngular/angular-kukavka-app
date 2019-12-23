@@ -3,6 +3,7 @@ import { EmployeeService } from '../../../shared/services/employee.service';
 import { IEmployee } from '../../../shared/interfaces/IEmployee';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'vk-list-employees',
@@ -10,15 +11,19 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./list-employees.component.scss'],
 })
 export class ListEmployeesComponent implements OnInit, OnDestroy {
-  constructor(private employeeService: EmployeeService) {}
+  constructor(private employeeService: EmployeeService, private router: Router) {}
   public employees: IEmployee[] = [];
   private destroy$ = new Subject();
 
+  // editEmployee(index: number): void {
+  //   this.employeeService
+  //     .getEmployee(index)
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((employee: IEmployee) => console.log(employee));
+  // }
+
   editEmployee(index: number): void {
-    this.employeeService
-      .getEmployee(index)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((employee: IEmployee) => console.log(employee));
+    this.router.navigate(['create', index]);
   }
 
   ngOnInit(): void {
