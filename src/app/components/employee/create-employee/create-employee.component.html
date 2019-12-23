@@ -126,7 +126,7 @@
         <div class="form-group">
           <div class="form-row mt-2">
             <div
-              class="col"
+              class="col-5"
               [ngClass]="{
                 'text-danger': skill.get('skillName').invalid && skill.get('skillName').touched
               }"
@@ -148,7 +148,7 @@
               </div>
             </div>
             <div
-              class="col"
+              class="col-5"
               [ngClass]="{
                 'text-danger':
                   skill.get('skillExperience').errors?.required &&
@@ -174,6 +174,19 @@
               >
                 {{ 'skillExperience is required' }}
               </div>
+            </div>
+            <div
+              *ngIf="employeeCreateForm.get('skills').length > 1"
+              class="col-2 d-flex justify-content-center"
+            >
+              <button
+                title="Delete Skill"
+                type="button"
+                (click)="removeSkillGroup(idx)"
+                class="btn btn-danger btn-block"
+              >
+                delete
+              </button>
             </div>
           </div>
         </div>

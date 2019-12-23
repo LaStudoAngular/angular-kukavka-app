@@ -86,6 +86,10 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     (this.employeeCreateForm.get('skills') as FormArray).push(this.addSkillFormGroup());
   }
 
+  public removeSkillGroup(index: number): void {
+    (this.employeeCreateForm.get('skills') as FormArray).removeAt(index);
+  }
+
   private contactPreferenceHandler(value: string): void {
     const phoneControl: FormControl = this.employeeCreateForm.get('phone') as FormControl;
     if (phoneControl && value === 'phone') {
@@ -93,7 +97,6 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     } else {
       phoneControl.clearValidators();
     }
-    // обновляем view чтобы валидаторы применились в модели формы
     phoneControl.updateValueAndValidity();
   }
 
@@ -118,14 +121,6 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
       }
-
-      // if (abstractControl instanceof FormArray) {
-      //   for (const control of abstractControl.controls) {
-      //     if (control instanceof FormGroup) {
-      //       this.logValidationErrors(control);
-      //     }
-      //   }
-      // }
     });
   }
 
