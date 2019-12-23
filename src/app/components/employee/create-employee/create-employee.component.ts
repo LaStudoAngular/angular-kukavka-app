@@ -92,6 +92,18 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     console.log(this.employeeCreateForm);
   }
 
+  private addSkillFormGroup(): FormGroup {
+    return this.fb.group({
+      skillName: ['', Validators.required],
+      skillExperience: ['', Validators.required],
+      skillProficiency: ['', Validators.required],
+    });
+  }
+
+  public addNewSkillGroup(): void {
+    (this.employeeCreateForm.get('skills') as FormArray).push(this.addSkillFormGroup());
+  }
+
   private contactPreferenceHandler(value: string): void {
     const phoneControl: FormControl = this.employeeCreateForm.get('phone') as FormControl;
     if (phoneControl && value === 'phone') {
@@ -124,14 +136,14 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
       }
-    });
-  }
 
-  public addSkillFormGroup(): FormGroup {
-    return this.fb.group({
-      skillName: ['', Validators.required],
-      skillExperience: ['', Validators.required],
-      skillProficiency: ['', Validators.required],
+      if (abstractControl instanceof FormArray) {
+        for (const control of abstractControl.controls) {
+          if (control instanceof FormGroup) {
+            this.logValidationErrors(control);
+          }
+        }
+      }
     });
   }
 
